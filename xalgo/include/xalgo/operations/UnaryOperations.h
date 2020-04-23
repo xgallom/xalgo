@@ -7,7 +7,7 @@
 
 namespace UnaryOperations
 {
-	double minus(double x, void *unused) noexcept;
+	double minus(double x) noexcept;
 }
 
 #endif //XALGO_ROOT_XALGO_INCLUDE_XALGO_OPERATIONS_UNARYOPERATIONS_H

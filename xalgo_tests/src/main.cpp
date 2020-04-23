@@ -9,6 +9,7 @@ static constexpr size_t MaxNameLength = 16;
 int main()
 {
 	static const std::unique_ptr<Test> Tests [] = {
+			TestOperations::Create(),
 	};
 
 	static const size_t Total = std::distance(std::begin(Tests), std::end(Tests));
