@@ -6,6 +6,7 @@
 #define XALGO_ROOT_XALGO_INCLUDE_XALGO_CORE_TYPEINFO_H
 
 #include "TypeId.h"
+#include <cstdint>
 
 namespace xalgo::core {
 	template<typename T>

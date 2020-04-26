@@ -10,17 +10,17 @@
 
 namespace xalgo::UnaryOperations
 {
-	bool minusInt8(Operations::Stack *stack, const void *);
-	bool minusUInt8(Operations::Stack *stack, const void *);
-	bool minusInt16(Operations::Stack *stack, const void *);
-	bool minusUInt16(Operations::Stack *stack, const void *);
-	bool minusInt32(Operations::Stack *stack, const void *);
-	bool minusUInt32(Operations::Stack *stack, const void *);
-	bool minusInt64(Operations::Stack *stack, const void *);
-	bool minusUInt64(Operations::Stack *stack, const void *);
-	bool minusFloat(Operations::Stack *stack, const void *);
-	bool minusDouble(Operations::Stack *stack, const void *);
-	bool minusLongDouble(Operations::Stack *stack, const void *);
+	bool minusInt8(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusUInt8(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusInt16(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusUInt16(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusInt32(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusUInt32(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusInt64(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusUInt64(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusFloat(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusDouble(Workspace::Class *workspace, Operations::Stack *stack, const void *);
+	bool minusLongDouble(Workspace::Class *workspace, Operations::Stack *stack, const void *);
 
 	inline constexpr Operations::Function::Interface minusPrimitive[core::TypeId::Count] = {
 			[core::TypeId::Invalid] = SystemOperations::invalid,
@@ -38,7 +38,7 @@ namespace xalgo::UnaryOperations
 			[core::TypeId::LongDouble] = minusLongDouble,
 	};
 
-	bool minus(Operations::Stack *stack, const void *) noexcept;
+	bool minus(Workspace::Class *workspace, Operations::Stack *stack, const void *) noexcept;
 }
 
 #endif //XALGO_ROOT_XALGO_INCLUDE_XALGO_OPERATIONS_UNARYOPERATIONS_H
