@@ -9,6 +9,7 @@
 #include <xalgo/operations/Operations.h>
 #include <xalgo/operations/EmptyOperations.h>
 #include <xalgo/operations/UnaryOperations.h>
+#include <xalgo/workspace/Workspace.h>
 
 #include <cmath>
 
@@ -19,6 +20,7 @@ const char *TestOperations::name()
 
 void TestOperations::execute()
 {
+	xalgo::Workspace::Class workspace;
 	xalgo::Operations::Class operations;
 
 	info("Adding constant(pi): ", M_PI);
@@ -39,7 +41,7 @@ void TestOperations::execute()
 	xalgo::Operations::Stack stack;
 
 	info("Executing with empty stack");
-	test(operations.execute(&stack), "Operations::Execute(emptyStack) failed");
+	test(operations.execute(&workspace, &stack), "Operations::Execute(emptyStack) failed");
 
 	auto result = stack.pop<double>();
 	info("Result<double>: ", bool(result), ", ", result());
@@ -53,7 +55,7 @@ void TestOperations::execute()
 	test(stack.byteSize() == 0, "Stack popped, bud removed incorrect length");
 
 	info("Rerunning on empty stack");
-	test(operations.execute(&stack), "Operations::Execute(emptyStack) failed");
+	test(operations.execute(&workspace, &stack), "Operations::Execute(emptyStack) failed");
 
 	info("Topping(double) result");
 	double top = stack.top<double>();
@@ -62,7 +64,7 @@ void TestOperations::execute()
 
 
 	info("Rerunning on non-empty stack");
-	test(operations.execute(&stack), "Operations::Execute(nonEmptyStack) failed");
+	test(operations.execute(&workspace, &stack), "Operations::Execute(nonEmptyStack) failed");
 
 	test(stack.size() == 2, "Stack does not contain 2 elements: ", stack.size());
 	test(stack.byteSize() == sizeof(double) * 2,
@@ -91,7 +93,7 @@ void TestOperations::execute()
 	test(operations.parameterSize(0) == 0, "Operations[0].parameterSize != 0");
 
 	info("Executing just Unary::minus on non empty stack");
-	test(operations.execute(&stack), "Operations::Execute(nonEmptyStack) failed");
+	test(operations.execute(&workspace, &stack), "Operations::Execute(nonEmptyStack) failed");
 	test(stack.size() == 1, "Operations::Execute did not consume previous value");
 	test(stack.byteSize() == sizeof(double),
 		 "Stack does not contain a single double: ", stack.byteSize(), " != ", sizeof(double));
@@ -115,7 +117,7 @@ void TestOperations::execute()
 
 	stack.push<float>(M_PI);
 	info("Executing just Unary::minusFloat on stack with a float");
-	test(operations.execute(&stack), "Operations::Execute(floatStack) failed");
+	test(operations.execute(&workspace, &stack), "Operations::Execute(floatStack) failed");
 	test(stack.size() == 1, "Operations::Execute did not consume previous value");
 	test(stack.byteSize() == sizeof(float),
 		 "Stack does not contain a single float: ", stack.byteSize(), " != ", sizeof(float));
@@ -132,7 +134,7 @@ void TestOperations::execute()
 		 "Stack does not have a correct size: ", stack.byteSize(), " != ", sizeof(double) + sizeof(float));
 
 	info("Executing Unary::minusFloat on a double");
-	test(!operations.execute(&stack), "Executing Unary::minusFloat on a double succeeded");
+	test(!operations.execute(&workspace, &stack), "Executing Unary::minusFloat on a double succeeded");
 	test(stack.size() == 3, "Execution removed the double from stack");
 	info("Current stack: ",
 		 stack.top<float>(1), ", ",
@@ -148,7 +150,7 @@ void TestOperations::execute()
 
 	info("Executing for every stack entry");
 	for(size_t n = 0; n < 3; ++n) {
-		test(operations.execute(&stack), "Generic execute failed with entry: ", n);
+		test(operations.execute(&workspace, &stack), "Generic execute failed with entry: ", n);
 
 		if(n == 0) {
 			const auto value = stack.pop<float>();

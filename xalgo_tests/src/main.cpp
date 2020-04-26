@@ -2,12 +2,13 @@
 
 #include <cstdio>
 #include <cstring>
-#include <cassert>
 
 int main()
 {
 	static const std::unique_ptr<Test> Tests[] = {
 			TestOperations::Create(),
+			TestVariablesWorkspace::Create(),
+			TestVariableOperation::Create(),
 	};
 
 	size_t maxNameLength = 0;
@@ -19,7 +20,7 @@ int main()
 
 	printf("Starting testing\n");
 
-	size_t index = 0;
+	size_t index = 1;
 	for(const auto &test : Tests) {
 		const char *const name = test->name();
 		std::stringstream ss;
