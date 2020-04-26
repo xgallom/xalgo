@@ -3,116 +3,74 @@
 //
 
 #include <xalgo/operations/Operations.h>
-#include <stack>
-#include <cstring>
 
-namespace Operations {
-	namespace {
+namespace xalgo::Operations {
+	void Class::add(Function::Interface operationFunction)
+	{
+		m_operationFunctions.push_back(operationFunction);
+		m_parameterSizes.push_back(0);
 	}
 
-	void Operations::add(
+	void Class::add(
 			Function::Interface operationFunction,
 			const uint8_t *parameter,
-			size_t parameterSize,
-			FunctionType::Enum functionType)
+			size_t parameterSize)
 	{
 		m_operationFunctions.push_back(operationFunction);
 		m_parameters.insert(m_parameters.end(), parameter, parameter + parameterSize);
 		m_parameterSizes.push_back(parameterSize);
-		m_operationFunctionTypes.push_back(functionType);
 	}
 
-	double Operations::execute() const noexcept
+	bool Class::execute(Stack *stack) const noexcept
 	{
 		auto operationFunction = m_operationFunctions.data();
 		auto parameter = m_parameters.data();
 		auto parameterSize = m_parameterSizes.data();
-		auto functionType = m_operationFunctionTypes.begin();
 
 		const auto end = operationFunction + size();
-		std::stack<double, std::vector<double>> stack = {};
 
-		for(; operationFunction < end; ++operationFunction, ++parameterSize) {
-			switch(functionType++) {
-				case FunctionType::Empty: {
-					const auto operation = reinterpret_cast<Function::EmptyInterface>(*operationFunction);
-
-					stack.push(operation());
-					break;
-				}
-
-				case FunctionType::WithParameter: {
-					const auto operation = reinterpret_cast<Function::WithParameterInterface>(*operationFunction);
-
-					const auto parameterBegin = parameter;
-					parameter += *parameterSize;
-
-					stack.push(operation(parameterBegin));
-					break;
-				}
-
-				case FunctionType::Unary: {
-					const auto operation = reinterpret_cast<Function::UnaryInterface>(*operationFunction);
-
-					const double x = stack.top();
-					stack.pop();
-
-					stack.push(operation(x));
-					break;
-				}
-
-				case FunctionType::UnaryWithParameter: {
-					const auto operation = reinterpret_cast<Function::UnaryWithParameterInterface>(*operationFunction);
-
-					const double x = stack.top();
-					stack.pop();
-
-					const auto parameterBegin = parameter;
-					parameter += *parameterSize;
-
-					stack.push(operation(x, parameterBegin));
-					break;
-				}
-
-				case FunctionType::Binary: {
-					const auto operation = reinterpret_cast<Function::BinaryInterface>(*operationFunction);
-
-					const double l = stack.top();
-					stack.pop();
-
-					const double r = stack.top();
-					stack.pop();
-
-					stack.push(operation(l, r));
-					break;
-				}
-
-				case FunctionType::BinaryWithParameter: {
-					const auto operation = reinterpret_cast<Function::BinaryWithParameterInterface>(*operationFunction);
-
-					const double l = stack.top();
-					stack.pop();
-
-					const double r = stack.top();
-					stack.pop();
-
-					const auto parameterBegin = parameter;
-					parameter += *parameterSize;
-
-					stack.push(operation(l, r, parameterBegin));
-					break;
-				}
-
-				case FunctionType::Count:
-					break;
-			}
+		while(operationFunction < end) {
+			if(!(**operationFunction++)(stack, parameter))
+				return false;
 		}
 
-		return stack.top();
+		return true;
 	}
 
-	size_t Operations::size() const noexcept
+	void Class::clear()
+	{
+		m_operationFunctions.clear();
+		m_parameters.clear();
+		m_parameterSizes.clear();
+	}
+
+	size_t Class::size() const noexcept
 	{
 		return m_operationFunctions.size();
+	}
+
+	const std::vector<Function::Interface> &Class::operationFunctions() const noexcept
+	{
+		return m_operationFunctions;
+	}
+
+	const std::vector<uint8_t> &Class::parameters() const noexcept
+	{
+		return m_parameters;
+	}
+
+	const std::vector<size_t> &Class::parameterSizes() const noexcept
+	{
+		return m_parameterSizes;
+	}
+
+	const Function::Interface &Class::operationFunction(size_t index) const noexcept
+	{
+		return m_operationFunctions[index];
+	}
+
+	const size_t &Class::parameterSize(size_t index) const noexcept
+	{
+		return m_parameterSizes[index];
 	}
 }

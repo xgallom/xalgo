@@ -3,22 +3,24 @@
 //
 
 #include <xalgo/operations/EmptyOperations.h>
+#include <xalgo/operations/OperationsStack.h>
 
-namespace EmptyOperations {
-	double constant(const double *parameter)
+namespace xalgo::EmptyOperations {
+	bool constant(Operations::Stack *stack, const double *constant) noexcept
 	{
-		return *parameter;
+		stack->push(*constant);
+		return true;
 	}
 
-	double variable(const char *parameter)
+	bool variable(Operations::Stack *stack, const char *variable) noexcept
 	{
 		// TODO: Implement
-		return 0.;
+		return false;
 	}
 
-	double functionCall()
+	bool functionCall(Operations::Stack *stack, const void *function) noexcept
 	{
 		// TODO: Implement
-		return 0.;
+		return false;
 	}
 }
