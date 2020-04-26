@@ -13,7 +13,7 @@ namespace xalgo::UnaryOperations {
 	}
 
 	template<typename T>
-	static bool minusGenericImpl(Operations::Stack *stack, void *valuePtr) noexcept
+	static bool minusGenericImpl(Operations::Stack *, void *valuePtr) noexcept
 	{
 		const auto value = reinterpret_cast<T *>(valuePtr);
 		*value = -*value;
@@ -29,7 +29,7 @@ namespace xalgo::UnaryOperations {
 	}
 
 #define XALGO_CREATE_PRIMITIVE_OPERATION(TYPE_ID, TYPE) \
-	bool minus##TYPE_ID(Operations::Stack *stack, const void *) { return minusImpl<TYPE>(stack); }
+	bool minus##TYPE_ID(Workspace::Class *, Operations::Stack *stack, const void *) { return minusImpl<TYPE>(stack); }
 
 	XALGO_CREATE_PRIMITIVE_OPERATION(Int8, int8_t)
 	XALGO_CREATE_PRIMITIVE_OPERATION(UInt8, uint8_t)
@@ -45,7 +45,7 @@ namespace xalgo::UnaryOperations {
 
 #undef XALGO_CREATE_PRIMITIVE_OPERATION
 
-	__attribute__((weak)) bool minus(Operations::Stack *stack, const void *) noexcept
+	__attribute__((weak)) bool minus(Workspace::Class *, Operations::Stack *stack, const void *) noexcept
 	{
 		using CallInterface = bool (*)(Operations::Stack *, void *) noexcept;
 

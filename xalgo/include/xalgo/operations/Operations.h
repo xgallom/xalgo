@@ -6,6 +6,7 @@
 #define XALGO_ROOT_XALGO_INCLUDE_XALGO_OPERATIONS_OPERATIONS_H
 
 #include "OperationFunction.h"
+#include "../workspace/Workspace_fwd.h"
 
 #include <vector>
 #include <cstdint>
@@ -24,6 +25,20 @@ namespace xalgo::Operations {
 				size_t parameterSize
 		);
 
+		template<typename Parameter, typename std::enable_if_t<
+				!std::is_same_v<Function::WithParameter<Parameter>, Function::Interface>, bool> = true>
+		void add(
+				Function::WithParameter<Parameter> operationFunction,
+				const uint8_t *parameter,
+				size_t parameterSize)
+		{
+			add(
+					reinterpret_cast<Function::Interface>(operationFunction),
+					parameter,
+					parameterSize
+			);
+		}
+
 		template<typename Parameter>
 		void add(
 				Function::WithParameter<Parameter> operationFunction,
@@ -36,15 +51,19 @@ namespace xalgo::Operations {
 			);
 		}
 
-		bool execute(Stack *stack) const noexcept;
+		bool execute(Workspace::Class *workspace, Stack *stack) const noexcept;
 
 		void clear();
 
 		[[nodiscard]] size_t size() const noexcept;
 
+		[[nodiscard]] std::vector<Function::Interface> &operationFunctions() noexcept;
 		[[nodiscard]] const std::vector<Function::Interface> &operationFunctions() const noexcept;
+		[[nodiscard]] std::vector<uint8_t> &parameters() noexcept;
 		[[nodiscard]] const std::vector<uint8_t> &parameters() const noexcept;
+		[[nodiscard]] std::vector<size_t> &parameterSizes() noexcept;
 		[[nodiscard]] const std::vector<size_t> &parameterSizes() const noexcept;
+
 
 		[[nodiscard]] const Function::Interface &operationFunction(size_t index) const noexcept;
 		template<typename T>

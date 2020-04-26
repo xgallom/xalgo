@@ -21,7 +21,7 @@ namespace xalgo::Operations {
 		m_parameterSizes.push_back(parameterSize);
 	}
 
-	bool Class::execute(Stack *stack) const noexcept
+	bool Class::execute(Workspace::Class *workspace, Stack *stack) const noexcept
 	{
 		auto operationFunction = m_operationFunctions.data();
 		auto parameter = m_parameters.data();
@@ -30,8 +30,10 @@ namespace xalgo::Operations {
 		const auto end = operationFunction + size();
 
 		while(operationFunction < end) {
-			if(!(**operationFunction++)(stack, parameter))
+			if(!(**operationFunction++)(workspace, stack, parameter))
 				return false;
+
+			parameter += *parameterSize++;
 		}
 
 		return true;
@@ -49,14 +51,29 @@ namespace xalgo::Operations {
 		return m_operationFunctions.size();
 	}
 
+	std::vector<Function::Interface> &Class::operationFunctions() noexcept
+	{
+		return m_operationFunctions;
+	}
+
 	const std::vector<Function::Interface> &Class::operationFunctions() const noexcept
 	{
 		return m_operationFunctions;
 	}
 
+	std::vector<uint8_t> &Class::parameters() noexcept
+	{
+		return m_parameters;
+	}
+
 	const std::vector<uint8_t> &Class::parameters() const noexcept
 	{
 		return m_parameters;
+	}
+
+	std::vector<size_t> &Class::parameterSizes() noexcept
+	{
+		return m_parameterSizes;
 	}
 
 	const std::vector<size_t> &Class::parameterSizes() const noexcept

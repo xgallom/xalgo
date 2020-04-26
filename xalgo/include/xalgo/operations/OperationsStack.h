@@ -32,9 +32,13 @@ namespace xalgo::Operations
 		[[nodiscard]] size_t byteSize() const noexcept;
 		[[nodiscard]] size_t size() const noexcept;
 
-		core::GenericType top(size_t offset = 1) noexcept;
-		core::ConstGenericType top(size_t offset = 1) const noexcept;
+		[[nodiscard]] core::GenericType top(size_t offset = 1) noexcept;
+		[[nodiscard]] core::ConstGenericType top(size_t offset = 1) const noexcept;
 		void pop(size_t count = 1) noexcept;
+		void push(const uint8_t *value, size_t size, size_t type);
+		void push(const core::ConstGenericType &value);
+
+		void clear() noexcept;
 
 		template<typename T>
 		[[nodiscard]] T &top(size_t offset = 1) noexcept
@@ -66,20 +70,11 @@ namespace xalgo::Operations
 			return result;
 		}
 
-		template<typename T>
+		template<typename T, typename std::enable_if_t<!std::is_base_of_v<core::GenericGenericType, T>, bool> = true>
 		void push(const T &value)
 		{
-			m_indexes.push_back({
-					.index = byteSize(),
-					.type = core::TypeInfo<T>::Id,
-			});
-
-			const auto *const valuePtr = reinterpret_cast<const uint8_t *>(&value);
-
-			m_data.insert(m_data.end(), valuePtr, valuePtr + core::TypeInfo<T>::Size);
+			push(reinterpret_cast<const uint8_t *>(&value), core::TypeInfo<T>::Size, core::TypeInfo<T>::Id);
 		}
-
-		void clear() noexcept;
 	};
 }
 

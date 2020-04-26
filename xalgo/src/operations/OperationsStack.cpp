@@ -4,8 +4,7 @@
 
 #include <xalgo/operations/OperationsStack.h>
 
-namespace xalgo::Operations
-{
+namespace xalgo::Operations {
 	uint8_t *Stack::data() noexcept
 	{
 		return m_data.data();
@@ -54,8 +53,9 @@ namespace xalgo::Operations
 		const auto &index = lastIndex(offset);
 
 		return {
-			.value = data() + index.index,
-			.type = index.type
+				.value = data() + index.index,
+				.size = index.size,
+				.type = index.type
 		};
 	}
 
@@ -68,6 +68,7 @@ namespace xalgo::Operations
 
 		return {
 				.value = data() + index.index,
+				.size = index.size,
 				.type = index.type
 		};
 	}
@@ -76,6 +77,24 @@ namespace xalgo::Operations
 	{
 		m_data.erase(m_data.begin() + lastIndex(count).index, m_data.end());
 		m_indexes.erase(m_indexes.end() - count, m_indexes.end());
+	}
+
+	void Stack::push(const uint8_t *value, size_t size, size_t type)
+	{
+		m_indexes.push_back(
+				{
+						.index = byteSize(),
+						.size = size,
+						.type = type,
+				}
+		);
+
+		m_data.insert(m_data.end(), value, value + size);
+	}
+
+	void Stack::push(const core::ConstGenericType &value)
+	{
+		push(value.value, value.size, value.type);
 	}
 
 	void Stack::clear() noexcept
