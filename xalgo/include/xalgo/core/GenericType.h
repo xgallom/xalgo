@@ -11,15 +11,19 @@
 #include <cstdint>
 
 namespace xalgo::core {
-	struct ConstGenericType {
+	struct GenericGenericType {};
+
+	struct ConstGenericType : GenericGenericType {
 		const uint8_t *value = {};
+		size_t size = 0;
 		size_t type = TypeId::Invalid;
 
 		explicit operator bool() const noexcept;
 	};
 
-	struct GenericType {
+	struct GenericType : GenericGenericType {
 		uint8_t *value = {};
+		size_t size = 0;
 		size_t type = TypeId::Invalid;
 
 		explicit operator bool() const noexcept;

@@ -8,6 +8,7 @@
 namespace xalgo::core {
 	struct TypeIndex {
 		size_t index;
+		size_t size;
 		size_t type;
 	};
 }
